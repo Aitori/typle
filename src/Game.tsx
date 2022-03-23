@@ -123,9 +123,7 @@ function Game(props: GameProps) {
   //   setGameNumber((x) => x + 1);
   // };
   async function share(copiedHint: string, text?: string) {
-    const url = seed
-      ? window.location.origin + window.location.pathname + currentSeedParams()
-      : getChallengeUrl(target);
+    const url = window.location.origin + window.location.pathname;
     const body = url + (text ? "\n\n" + text : "");
     if (
       /android|iphone|ipad|ipod|webos/i.test(navigator.userAgent) &&
@@ -297,7 +295,7 @@ function Game(props: GameProps) {
               );
             }}
           >
-            Share emoji results
+            SHARE BUTTON HERE!!!!
           </button>
         )}
       </p>
