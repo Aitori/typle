@@ -62,7 +62,7 @@ function App() {
 
   return (
     <div className={"App-container" + (colorBlind ? " color-blind" : "")}>
-      <h1>typle</h1>
+      <h1>typole</h1>
       <div className="top-right">
         {page !== "game" ? (
           link("❌", "Close", "game")
