@@ -140,6 +140,12 @@ table.Game-rows > tbody {
   color: white !important;
 }
 
+.letter-typo {
+  border: 2px solid transparent;
+  background-color: rgb(253, 0, 0);
+  color: white !important;
+}
+
 body.dark {
   background-color: #404040;
   color: #e0e0e0;

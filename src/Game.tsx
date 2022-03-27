@@ -39,12 +39,19 @@ const maxLength = 11;
 const limitLength = (n: number) =>
   n >= minLength && n <= maxLength ? n : defaultLength;
 
-function randomTarget(wordLength: number): string {
+interface RandomTargetValue {
+  word: string;
+  letterToChange: number;
+  newLetter: string;
+}
+
+function randomTarget(wordLength: number): RandomTargetValue {
   const eligible = targets.filter((word) => word.length === wordLength);
   let candidate: string;
   do {
     candidate = pick(eligible);
   } while (/\*/.test(candidate));
+  console.log(candidate);
   const seedVariance = seed;
   const letterToChange = seedVariance % 5;
   const offset = seedVariance % 26;
@@ -54,7 +61,12 @@ function randomTarget(wordLength: number): string {
   const newLetter = alphabet[(currentLetter + offset) % 26];
   candidateArray[letterToChange] = newLetter;
   candidate = candidateArray.join("");
-  return candidate;
+  console.log(candidate);
+  return {
+    word: candidate,
+    letterToChange: letterToChange,
+    newLetter: newLetter,
+  };
 }
 
 function getChallengeUrl(target: string): string {
@@ -105,7 +117,7 @@ function Game(props: GameProps) {
     resetRng();
     // Skip RNG ahead to the parsed initial game number:
     for (let i = 1; i < gameNumber; i++) randomTarget(wordLength);
-    return challenge || randomTarget(wordLength);
+    return randomTarget(wordLength);
   });
   const [hint, setHint] = useState<string>("");
   const currentSeedParams = () =>
@@ -177,8 +189,8 @@ function Game(props: GameProps) {
       //   return;
       // }
       for (const g of guesses) {
-        const c = clue(g, target);
-        const feedback = violation(props.difficulty, c, currentGuess);
+        const c = clue(g, target.word, target.newLetter);
+        const feedback = violation(Difficulty.UltraHard, c, currentGuess);
         if (feedback) {
           setHint(feedback);
           return;
@@ -190,7 +202,7 @@ function Game(props: GameProps) {
 
       const gameOver = (verbed: string) => `You ${verbed}!`;
 
-      if (currentGuess === target) {
+      if (currentGuess === target.word) {
         setHint(gameOver("won"));
         setGameState(GameState.Won);
       } else if (guesses.length + 1 === props.maxGuesses) {
@@ -198,7 +210,7 @@ function Game(props: GameProps) {
         setGameState(GameState.Lost);
       } else {
         setHint("");
-        speak(describeClue(clue(currentGuess, target)));
+        speak(describeClue(clue(currentGuess, target.word, target.newLetter)));
       }
     }
   };
@@ -223,7 +235,7 @@ function Game(props: GameProps) {
     .fill(undefined)
     .map((_, i) => {
       const guess = [...guesses, currentGuess][i] ?? "";
-      const cluedLetters = clue(guess, target);
+      const cluedLetters = clue(guess, target.word, target.newLetter);
       const lockedIn = i < guesses.length;
       if (lockedIn) {
         for (const { clue, letter } of cluedLetters) {
@@ -287,7 +299,7 @@ function Game(props: GameProps) {
                 `${gameName} ${score}/${props.maxGuesses}\n` +
                   guesses
                     .map((guess) =>
-                      clue(guess, target)
+                      clue(guess, target.word, target.newLetter)
                         .map((c) => emoji[c.clue ?? 0])
                         .join("")
                     )

@@ -1,11 +1,10 @@
-
-   
 import { Difficulty, englishNumbers, ordinal } from "./util";
 
 export enum Clue {
   Absent,
   Elsewhere,
   Correct,
+  Typo,
 }
 
 export interface CluedLetter {
@@ -13,7 +12,11 @@ export interface CluedLetter {
   letter: string;
 }
 
-export function clue(word: string, target: string): CluedLetter[] {
+export function clue(
+  word: string,
+  target: string,
+  typo: string
+): CluedLetter[] {
   let elusive: string[] = [];
   target.split("").forEach((letter, i) => {
     if (word[i] !== letter) {
@@ -24,6 +27,8 @@ export function clue(word: string, target: string): CluedLetter[] {
     let j: number;
     if (target[i] === letter) {
       return { clue: Clue.Correct, letter };
+    } else if (letter === typo) {
+      return { clue: Clue.Typo, letter };
     } else if ((j = elusive.indexOf(letter)) > -1) {
       // "use it up" so we don't clue at it twice
       elusive[j] = "";
@@ -39,6 +44,8 @@ export function clueClass(clue: Clue): string {
     return "letter-absent";
   } else if (clue === Clue.Elsewhere) {
     return "letter-elsewhere";
+  } else if (clue === Clue.Typo) {
+    return "letter-typo";
   } else {
     return "letter-correct";
   }

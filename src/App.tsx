@@ -34,7 +34,7 @@ function App() {
     window.matchMedia("(prefers-color-scheme: dark)").matches;
   const [dark, setDark] = useSetting<boolean>("dark", prefersDark);
   const [colorBlind, setColorBlind] = useSetting<boolean>("colorblind", false);
-  const [difficulty, setDifficulty] = useSetting<number>("difficulty", 0);
+  const [difficulty, setDifficulty] = useSetting<number>("difficulty", 2);
   const [keyboard, setKeyboard] = useSetting<string>(
     "keyboard",
     "qwertyuiop-asdfghjkl-BzxcvbnmE"
@@ -67,9 +67,7 @@ function App() {
         {page !== "game" ? (
           link("❌", "Close", "game")
         ) : (
-          <>
-            {link("⚙️", "Settings", "settings")}
-          </>
+          <>{link("⚙️", "Settings", "settings")}</>
         )}
       </div>
       {page === "about" && <About />}
@@ -99,12 +97,12 @@ function App() {
               type="range"
               min="0"
               max="2"
-              value={difficulty}
-              onChange={(e) => setDifficulty(+e.target.value)}
+              value={2}
+              onChange={() => {}}
             />
             <div>
               <label htmlFor="difficulty-setting">Difficulty:</label>
-              <strong>{["Normal", "Hard", "Ultra Hard"][difficulty]}</strong>
+              <strong>{["Normal", "Hard", "Ultra Hard"][2]}</strong>
               <div
                 style={{
                   fontSize: 14,
@@ -118,7 +116,7 @@ function App() {
                     `Guesses could be valid dictionary words.`,
                     `Wordle's "Hard Mode". Green letters must stay fixed, and yellow letters must be reused.`,
                     `An even stricter Hard Mode. Yellow letters must move away from where they were clued, and gray clues must be obeyed.`,
-                  ][difficulty]
+                  ][2]
                 }
               </div>
             </div>
@@ -149,7 +147,7 @@ function App() {
         </div>
       )}
       <Game
-        maxGuesses={maxGuesses}
+        maxGuesses={12}
         hidden={page !== "game"}
         difficulty={difficulty}
         colorBlind={colorBlind}
